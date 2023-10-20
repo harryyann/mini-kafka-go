@@ -1,3 +1,6 @@
-# Mini-kafka-go
-一个go实现的简易分布式消息引擎，参考自Kafka.
+go-build: go-generate
+	go build -o target/kafka cmd/core/main.go
+
+go-generate:
+	go generate -x 'mini-kafka-go/pkg/protocol'
 

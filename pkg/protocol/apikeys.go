@@ -7,4 +7,7 @@ const (
 	PRODUCE ApiKey = iota
 	FETCH
 	METADATA
+	JOIN_GROUP
+	SYNC_GROUP
+	COMMIT_OFFSET
 )
