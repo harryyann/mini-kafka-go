@@ -1,0 +1,4 @@
+.idea
+tmp/
+target/
+*_string.go
