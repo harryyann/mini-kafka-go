@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"mini-kafka-go/pkg/config"
+	"mini-kafka-go/pkg/protocol"
 	"net"
 	"sync"
 	"time"
@@ -33,7 +34,6 @@ func (c *LocalConnect) handleRequest(ctx context.Context, s *SocketServer) {
 			s.onError("Read bytes from client failed", err)
 			break
 		}
-		fmt.Println(n)
 		if n <= 0 {
 			s.onError("Remote client closed", err)
 			break
@@ -42,15 +42,32 @@ func (c *LocalConnect) handleRequest(ctx context.Context, s *SocketServer) {
 		}
 		c.lastTime = time.Now().Unix()
 		fmt.Println(string(buffer[:n]))
+		r, err := protocol.DeserializeKafkaRequest(buffer[:n])
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		switch r.GetApiKey() {
+		case protocol.PRODUCE:
+			fmt.Println("produce request")
+			p, ok := r.(protocol.ProduceRequest)
+			if !ok {
+				fmt.Println("parse produce request failed")
+			}
+			fmt.Printf("%+v\n", p)
+		case protocol.FETCH:
 
-		// 解析请求进行处理
+		default:
+			fmt.Println("Unrecognized request")
+		}
 	}
 }
 
-func DefaultSocketServer() SocketServer {
+func DefaultSocketServer(ctx context.Context, kafkaConfig *config.KafkaConfig, listen string) SocketServer {
 	return SocketServer{
-		ctx:                  context.Background(),
-		address:              "0.0.0.0:9092",
+		ctx:                  ctx,
+		config:               kafkaConfig,
+		address:              listen,
 		clients:              make(map[string]*LocalConnect),
 		clientTimeoutSeconds: 10,
 		maxClientNum:         1024,
@@ -76,6 +93,7 @@ func DefaultSocketServer() SocketServer {
 
 type SocketServer struct {
 	ctx                  context.Context
+	config               *config.KafkaConfig
 	address              string
 	clients              map[string]*LocalConnect
 	clientTimeoutSeconds int64
@@ -131,7 +149,7 @@ func (s *SocketServer) checkClient(ctx context.Context) {
 		default:
 		}
 		if s.clientTimeoutSeconds < 1 {
-			time.Sleep(3 * time.Second)
+			time.Sleep(5 * time.Second)
 			continue
 		}
 		s.mutex.Lock()
@@ -142,7 +160,7 @@ func (s *SocketServer) checkClient(ctx context.Context) {
 			}
 		}
 		s.mutex.Unlock()
-		time.Sleep(3 * time.Second)
+		time.Sleep(5 * time.Second)
 	}
 }
 

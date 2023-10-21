@@ -1,0 +1,5 @@
+brokerId: 0
+logDIr: "/opt/kafka/data"
+listeners: "127.0.0.1:9092,127.0.0.1:9093"
+maxConnectionsPerListener: 1024
+maxMessagBytes: 1024
