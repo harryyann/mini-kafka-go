@@ -2,8 +2,9 @@
 
 golang实现的简易分布式消息引擎，参考自Kafka，可作为对kafka源码的学习。
 
-# Features
+# Overview
 
-- 使用Zookeeper分布式协调服务
+- 使用Etcd作为分布式协调服务和元数据存储
+- 支持分区级别生产消费
 
 # Quick start
