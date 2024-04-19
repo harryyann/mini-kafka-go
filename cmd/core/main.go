@@ -36,7 +36,7 @@ func main() {
 	case <-signalChan:
 		fmt.Println("Interrupt signal! Server will stop gracefully")
 		// TODO serer的优雅退出
-		s.Stop()
+		s.GracefulStop()
 		os.Exit(0)
 	}
 }

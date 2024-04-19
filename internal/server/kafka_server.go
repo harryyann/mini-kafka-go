@@ -9,7 +9,7 @@ import (
 )
 
 type KafkaServer struct {
-	ctx       context.Context
+	config    config.KafkaConfig
 	listeners map[*SocketServer]context.CancelFunc
 }
 
@@ -26,7 +26,6 @@ func NewKafkaServer(ctx context.Context, c *config.KafkaConfig) KafkaServer {
 		localListeners[&socketServer] = cancel
 	}
 	return KafkaServer{
-		ctx:       ctx,
 		listeners: localListeners,
 	}
 }
@@ -37,8 +36,17 @@ func (s *KafkaServer) Startup() {
 	}
 }
 
-func (s *KafkaServer) Stop() {
+func (s *KafkaServer) GracefulStop() {
 	for _, cancel := range s.listeners {
 		cancel()
 	}
+	err := s.cleanup()
+	if err != nil {
+		fmt.Println("Clean up error")
+	}
+}
+
+func (s *KafkaServer) cleanup() error {
+
+	return nil
 }
