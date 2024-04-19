@@ -3,6 +3,7 @@ package config
 import "sync"
 
 type KafkaConfig struct {
+	Mode                      string `yaml:"mode"`
 	BrokerId                  string `yaml:"brokerId"`
 	LogDir                    string `yaml:"logDir"`
 	Listeners                 string `yaml:"listeners"`

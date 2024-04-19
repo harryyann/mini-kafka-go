@@ -3,10 +3,11 @@ package server
 import (
 	"context"
 	"fmt"
-	"os"
+	"go.uber.org/zap"
 	"strings"
 
 	"mini-kafka-go/pkg/config"
+	"mini-kafka-go/pkg/log"
 )
 
 type KafkaServer struct {
@@ -17,8 +18,7 @@ type KafkaServer struct {
 func NewKafkaServer(ctx context.Context, c *config.KafkaConfig) KafkaServer {
 	listeners := strings.Split(c.Listeners, ",")
 	if len(listeners) == 0 {
-		fmt.Println("listener must be configured at least once")
-		os.Exit(1)
+		log.Logger().Fatal("listener must be configured at least once")
 	}
 	localListeners := map[*SocketServer]context.CancelFunc{}
 	for _, l := range listeners {
@@ -41,10 +41,18 @@ func (s *KafkaServer) GracefulStop() {
 	for _, cancel := range s.listeners {
 		cancel()
 	}
+
 	err := s.cleanup()
 	if err != nil {
-		fmt.Println("Clean up error")
+		log.Logger().Error("Clean up error")
 	}
+
+	defer func(l *zap.Logger) {
+		err := l.Sync()
+		if err != nil {
+			fmt.Println("Sync logger failed")
+		}
+	}(log.Logger())
 }
 
 func (s *KafkaServer) cleanup() error {

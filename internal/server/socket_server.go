@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"mini-kafka-go/pkg/config"
+	"mini-kafka-go/pkg/log"
 	"mini-kafka-go/pkg/protocol"
 	"net"
 	"sync"
@@ -76,7 +77,7 @@ func DefaultSocketServer(ctx context.Context, kafkaConfig *config.KafkaConfig, l
 			fmt.Println(msg)
 		},
 		onStart: func(server *SocketServer) {
-			fmt.Println("Socket server started!")
+			log.Logger().Info("Socket server listening on " + server.address)
 		},
 		onConnect: func(client *LocalConnect) {
 			fmt.Println("Client connected!", client.id)

@@ -1,3 +1,6 @@
+# mode
+mode: "develop"
+
 # broker
 brokerId: 0
 logDir: "/opt/kafka/data"
