@@ -14,7 +14,7 @@ import (
 func main() {
 	fileBytes, err := os.ReadFile("config/server.yaml")
 	if err != nil {
-		fmt.Println("read file failed")
+		fmt.Println("Load config file server.yaml failed:")
 		os.Exit(1)
 	}
 	c := config.NewKafkaConfig()
@@ -34,24 +34,23 @@ func main() {
 		signalCancel()
 		return
 	case <-signalChan:
-		fmt.Println("Interrupt by signal")
-		os.Exit(1)
+		fmt.Println("Interrupt signal! Server will stop gracefully")
+		// TODO serer的优雅退出
+		s.Stop()
+		os.Exit(0)
 	}
 }
 
 func signalListen(signalCtx context.Context, signalChan chan struct{}) {
-	fmt.Println("Signal listen started")
+	fmt.Println("Signal listening")
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGINT)
-	for {
-		select {
-		case <-c:
-			fmt.Println("Received stop signal")
-			signalChan <- struct{}{}
-			return
-		case <-signalCtx.Done():
-			return
-		default:
-		}
+	select {
+	case <-c:
+		fmt.Println("Received stop signal")
+		signalChan <- struct{}{}
+		return
+	case <-signalCtx.Done():
+		return
 	}
 }

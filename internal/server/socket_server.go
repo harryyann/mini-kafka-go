@@ -31,11 +31,11 @@ func (c *LocalConnect) handleRequest(ctx context.Context, s *SocketServer) {
 		n, err := c.conn.Read(buffer[:])
 		if err != nil {
 			s.removeClient(c)
-			s.onError("Read bytes from client failed", err)
+			s.onError("Read bytes from clients failed", err)
 			break
 		}
 		if n <= 0 {
-			s.onError("Remote client closed", err)
+			s.onError("Remote clients closed", err)
 			break
 		} else if n > 1024 {
 			// TODO 返回请求过大的错误
@@ -118,7 +118,7 @@ func (s *SocketServer) Startup() {
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
-			s.onError("Socket server accept from client failed", err)
+			s.onError("Socket server accept from clients failed", err)
 			continue
 		}
 		if s.currentClientNum > s.maxClientNum {

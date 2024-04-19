@@ -1,5 +1,11 @@
+# broker
 brokerId: 0
-logDIr: "/opt/kafka/data"
+logDir: "/opt/kafka/data"
 listeners: "127.0.0.1:9092,127.0.0.1:9093"
 maxConnectionsPerListener: 1024
 maxMessagBytes: 1024
+
+# etcd
+etcd.connect: "127.0.0.1:2379"
+etcd.timeout:  2000
+etcd.prefix:  "/kafka"
