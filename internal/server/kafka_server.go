@@ -3,9 +3,10 @@ package server
 import (
 	"context"
 	"fmt"
-	"mini-kafka-go/pkg/config"
 	"os"
 	"strings"
+
+	"mini-kafka-go/pkg/config"
 )
 
 type KafkaServer struct {

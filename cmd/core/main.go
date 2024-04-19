@@ -3,12 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
-	"gopkg.in/yaml.v3"
-	"mini-kafka-go/internal/server"
-	"mini-kafka-go/pkg/config"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"gopkg.in/yaml.v3"
+
+	"mini-kafka-go/internal/server"
+	"mini-kafka-go/pkg/config"
 )
 
 func main() {
