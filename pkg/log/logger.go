@@ -4,7 +4,7 @@ import (
 	"go.uber.org/zap"
 )
 
-var l *zap.Logger
+var sl *zap.SugaredLogger
 
 // Log Mode
 const (
@@ -14,17 +14,22 @@ const (
 
 func InitLog(mode string) error {
 	var err error
+	var logger *zap.Logger
 	switch mode {
 	case DEVELOPMENT:
-		l, err = zap.NewDevelopment()
+		logger, err = zap.NewDevelopment()
 	case PRODUCE:
-		l, err = zap.NewProduction()
+		logger, err = zap.NewProduction()
 	default:
-		l = zap.NewExample()
+		logger, err = zap.NewDevelopment()
 	}
-	return err
+	if err != nil {
+		return err
+	}
+	sl = logger.Sugar()
+	return nil
 }
 
-func Logger() *zap.Logger {
-	return l
+func Logger() *zap.SugaredLogger {
+	return sl
 }

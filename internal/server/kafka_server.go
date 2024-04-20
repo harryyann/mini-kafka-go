@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"go.uber.org/zap"
 	"strings"
 
@@ -37,22 +36,15 @@ func (s *KafkaServer) Startup() {
 	}
 }
 
-func (s *KafkaServer) GracefulStop() {
+func (s *KafkaServer) GracefullyStop() {
 	for _, cancel := range s.listeners {
 		cancel()
 	}
 
 	err := s.cleanup()
 	if err != nil {
-		log.Logger().Error("Clean up error")
+		log.Logger().Error("Clean up error", zap.Error(err))
 	}
-
-	defer func(l *zap.Logger) {
-		err := l.Sync()
-		if err != nil {
-			fmt.Println("Sync logger failed")
-		}
-	}(log.Logger())
 }
 
 func (s *KafkaServer) cleanup() error {

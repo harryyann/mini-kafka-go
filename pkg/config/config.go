@@ -9,7 +9,7 @@ type KafkaConfig struct {
 	Listeners                 string `yaml:"listeners"`
 	MaxConnectionsPerListener int    `yaml:"maxConnectionsPerListener,omitempty"`
 	MaxMessageBytes           int    `yaml:"maxMessageBytes,omitempty"`
-	clientTimeoutSeconds      int    `yaml:"clientTimeoutSeconds,omitempty"`
+	ClientTimeoutSeconds      int    `yaml:"clientTimeoutSeconds,omitempty"`
 }
 
 var config *KafkaConfig
